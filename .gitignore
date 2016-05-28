@@ -1,0 +1,24 @@
+*.o
+*.a
+bin/
+out/
+
+# Emacs gitignore
+
+# -*- mode: gitignore; -*-
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Org-mode
+.org-id-locations
+*_archive
+
+# eshell files
+/eshell/history
+/eshell/lastdir

@@ -19,7 +19,7 @@ File_mapped file_mmapR(char *filename)
         close(fd);
 
         if(addr == MAP_FAILED) {
-                fprintf(stderr, "Can't mmap file (no RAM or bad file)");
+                fprintf(stderr, "Can't mmap file (no RAM or bad file)\n");
                 return (File_mapped){NULL, NULL, -1};
         }
 

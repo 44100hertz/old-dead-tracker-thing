@@ -1,23 +1,19 @@
 # funtracker
-A non-traditional music tracker. The "un-tracker".
+The "un-tracker". A music tracker. Linux-oriented, Windows/OSX maybe later.
 
 ### What it is
 Funtracker is a way for me to learn SDL and C, and to make a hopefully cool 8-bit tracker.
-It is designed to be both efficient and flexible, by reducing redundancy, and by allowing parameters to be changed on-the-fly.
+It is designed to be used on larger, multiple-track projects, to increase flexibility and reduce filesize.
 
-The biggest things:
- - There are no instruments, just channel-persistent parameters to be saved and loaded
- - Samples are stored as a separate file and can be used in multiple tracks
- - Channels act as pairs, allowing for basic sound synthesis using samples, and easy stereo management
- - Limited by design to reduce overhead and to force creativity
+The biggest ideas:
+ - No instruments, just channel-persistent parameters
+ - All samples, or "Waves" are stored in a .pcmlib and can be shared across multiple tracks
+ - Channels act as pairs, allowing for cool stuff using multiple samples, and easier stereo
 
 ### What it is not
-Funtracker is not designed to emulate older trackers, and will not support .mod or .xm.
-Funtracker does not use precise math or expensive operations. I aim to keep things integer and LUT-based.
+ - Funtracker does not emulate other trackers, and will not support .mod or .xm, except maybe imported.
+ - Funtracker does not use precise math or expensive operations. I aim to keep things integer and LUT-based.
 
-### current goals
- 1. Sample reading, playback, and manipulation
- 2. Development of sample and track formats
- 3. Reading and writing basic tracks
- 4. An SDL UI and live playback
- 5. ...
+### goals
+ 1. Reading of waves, writing of pcmlib, with .au, .wav, maybe .aiff support. Graphical pcmlib builder?
+ 2. Development of module format

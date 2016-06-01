@@ -2,9 +2,9 @@
 #include <stdio.h>
 
 typedef struct {
-	char *name;
-	int8_t *data;
-} sample_type;
+        char *name;
+        file_type file;
+} Sample;
 
-sample_type *sample_fromRaw(FILE *in, uint16_t readSize, char *name);
-void sample_free(sample_type *sample);
+Sample *sample_fromRaw(char *filename, char *name);
+void sample_free(Sample *sample);

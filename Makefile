@@ -6,6 +6,6 @@ default: bin/samplefile
 	gcc -std=gnu99 src/*.c -lm -o bin/samplefile
 
 clean:
-	rm -rf bin/samplefile
+	rm -rf bin/*
 
 .PHONY: default clean

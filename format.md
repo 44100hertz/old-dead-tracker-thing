@@ -1,11 +1,12 @@
 # File formats
- - one char = one byte
+ - one written char = one byte
  - 16-bit (XX) offsets are in multiples of 4 bytes
  - all offsets are absolute
  - first letter is magic, X/Y/Z is binary data
  - [optional params bracketed]
  - "_" is a space (0x20)
-## .pcmlib ##
+
+## pcmlib
 ### HEADER
     SamP    magic number
     n_XX    number of waves

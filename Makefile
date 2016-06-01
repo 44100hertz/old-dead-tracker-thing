@@ -1,9 +1,9 @@
 CFLAGS=-Wall -g
 
-default: bin/samplefile
+default: bin/sampleedit
 
-./bin/samplefile: src/*.c src/*.h
-	gcc -std=gnu99 src/*.c -lm -o bin/samplefile
+./bin/sampleedit: src/common/*.c src/common/*.h src/*.c
+	gcc -std=gnu99 src/common/*.c src/sampleedit.c -lm -o bin/sampleedit
 
 clean:
 	rm -rf bin/*

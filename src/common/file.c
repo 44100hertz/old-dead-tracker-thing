@@ -6,9 +6,7 @@
 #include <unistd.h>
 #include "file.h"
 
-/* TODO: add filename handling */
-/* TODO: rename "file_type" to "File" */
-file_type file_mmap(char *filename)
+File_mapped file_mmapR(char *filename)
 {
         /* "filedescriptor" fd is arbitrary unix number for file access */
         int fd = open(filename, O_RDONLY);
@@ -22,10 +20,11 @@ file_type file_mmap(char *filename)
 
         if(addr == MAP_FAILED) {
                 fprintf(stderr, "Can't mmap file (no RAM or bad file)");
-                return (file_type){NULL, -1};
+                return (File_mapped){NULL, NULL, -1};
         }
 
-        file_type file;
+        File_mapped file;
+        file.filename = filename;
         file.addr = addr;
         /* casts off_t to size_t. Probably okay? */
         file.size = sb.st_size;
@@ -33,7 +32,6 @@ file_type file_mmap(char *filename)
         return file;
 }
 
-void file_free(file_type *file) {
-        munmap(file->addr, file->size);
-        free(file);
+void file_free(File_mapped file) {
+        munmap(file.addr, file.size);
 }

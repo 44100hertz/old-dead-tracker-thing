@@ -1,9 +1,10 @@
 #include <stdlib.h> /* for size_t */
 
 typedef struct {
+        char *filename;
         char *addr;
         size_t size;
-} file_type;
+} File_mapped;
 
-file_type file_mmap(char *filename);
-void file_free(file_type *file);
+File_mapped file_mmapR(char *filename);
+void file_free(File_mapped file);

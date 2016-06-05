@@ -1,5 +1,3 @@
-#include <stdlib.h> /* for size_t */
-
 typedef struct {
         char *filename;
         char *addr;

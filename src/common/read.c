@@ -3,7 +3,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "file.h"
-#include "wave.h"
+#include "song.h"
+#include "read.h"
 
 static inline
 uint32_t read32(char *addr)
@@ -17,18 +18,18 @@ uint16_t read16(char *addr)
         return(addr[0] << 8 | addr[0]);
 }
 
-/* Read a pcmlib from a file */
-void read_pcmlib(char *addr, Wave **wave)
+void read_pcmlib(char *filename, Song *song)
 {
-        /* Magic number */
-        if(strncmp(&addr[0], "SamPLE", 6)) {
+        song->pcmlib = file_mmapR(filename);
+        if(strncmp(song->pcmlib.addr, "SamPLE", 6)) {
                 fprintf(stderr, "Not a pcmlib file!");
                 return;
         }
-        char *head = addr;
-        char *end = addr+sizeof(addr);
+        char *head = song->pcmlib.addr;
+        char *end = song->pcmlib.addr + song->pcmlib.size;
         while(head<end) {
-                switch(head) {
+                switch(*head) {
+                        /* read in MagicSizeData */
                 }
                 ++head;
         }

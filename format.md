@@ -1,25 +1,25 @@
-# File formats
- - one written char = one byte
- - 16-bit (XX) offsets are in multiples of 4 bytes
- - all offsets are absolute
- - first letter is magic, X/Y/Z is binary data
- - [optional params bracketed]
- - "_" is a space (0x20)
+# File format
+First, there's the HEADER. Then, each wave has its own data, one for each wave.
+
+The format for all data is: MssssDDDDD.....
+ - M = magic number
+ - ssss = size of data (32-bits)
+ - DDDDD... = data
 
 ## pcmlib
-### HEADER
-    SamP    magic number
-    n_XX    number of waves
-    h_XX    offset of wave headers
-    [c_XX]  offset of comment
-    ...     rest of header
-### WAVE HEADERS
-    XXXX    wave offset (in data)
-    [N_XX]  offset of next wave header
-    [n_XX]  offset of wave name
-    [s_XX]  sample rate
-    ...     rest of header
-### WAVE DATA
-    <insert however-long stream of 8bit PCM here>
+### HEADER PARAMS
+    SamPLE  magic number
+    <needed>
+    N       number of waves
+    <optional>
+    t       text (message)
+    \0      padding
+### EACH WAVE PARAMS
+    <needed>
+    w       wave data
+    <optional>
+    s       sample rate
+    t       text (name)
+    \0      padding
 
 

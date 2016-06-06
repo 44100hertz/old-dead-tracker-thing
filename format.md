@@ -16,6 +16,7 @@ The format for all data is: MssssDDDDD.....
     \0      padding
 ### EACH WAVE PARAMS
     <needed>
+    W       indicates start of wave data block
     w       wave data
     <optional>
     s       sample rate

@@ -6,33 +6,32 @@
 #include "song.h"
 #include "read.h"
 
-static inline
-uint32_t read32(char *addr)
+void parse(Song *song, char *head, uint32_t bsize)
 {
-        return(addr[0] << 24 | addr[1] << 16 | addr[2] << 8 | addr[3]);
-}
-
-static inline
-uint16_t read16(char *addr)
-{
-        return(addr[0] << 8 | addr[0]);
+        char *end = head + bsize;
+        while(head<end) {
+                char magic = head[0];
+                uint32_t size = *(uint32_t*)&head[1];
+                head+=5;
+                switch(magic) {
+                case 'W':
+                        parse(song, head, size);
+                        break;
+                }
+                head+=size;
+        }
 }
 
 void read_pcmlib(char *filename, Song *song)
 {
         song->pcmlib = file_mmapR(filename);
-        if(strncmp(song->pcmlib.addr, "SamPLE", 6)) {
+        if(strcmp(song->pcmlib.addr, "SamPLE")) {
                 fprintf(stderr, "Not a pcmlib file!");
                 return;
         }
         char *head = song->pcmlib.addr;
-        char *end = song->pcmlib.addr + song->pcmlib.size;
-        while(head<end) {
-                switch(*head) {
-                        /* read in MagicSizeData */
-                }
-                ++head;
-        }
+        uint32_t size = song->pcmlib.size;
+        parse(song, head, size);
 }
 
 

@@ -54,6 +54,4 @@ void read_pcmlib(Song *song)
     song->numWaves = get16(head+=2);
     song->wave = malloc(song->numWaves * sizeof(Wave));
     parse(song, head, -1);
-    /* TODO: free this when actually needed */
-    free(song->wave);
 }

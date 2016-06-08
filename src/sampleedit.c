@@ -27,5 +27,7 @@ int main(int argc, char **argv)
             debug_file(argv[++i]);
         }
     }
+    free(song->wave);
+    free(song);
     return 0;
 }

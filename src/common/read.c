@@ -8,9 +8,9 @@
  */
 
 #include <stdio.h>
-#include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 #include "file.h"
 #include "song.h"
 #include "read.h"
@@ -18,7 +18,6 @@
 static inline uint16_t get16(char *addr) { return *(uint16_t*)(addr); }
 static inline uint32_t get32(char *addr) { return *(uint32_t*)(addr); }
 
-/* TODO: Global song? */
 static
 uint32_t parse(Song *song, char *head, int16_t index)
 {
@@ -45,12 +44,10 @@ uint32_t parse(Song *song, char *head, int16_t index)
     return 8+size; /* 8 is magic+numChildren+size */
 }
 
-void read_pcmlib(char *filename, Song *song)
+void read_pcmlib(Song *song)
 {
-    /* TODO: move file access elsewhere */
-    song->pcmlib = file_mmapR(filename);
     char *head = song->pcmlib.addr;
-    if(strcmp(head+=6, "SamPLE")) {
+    if(!strcmp(head+=6, "SamPLE")) {
         fprintf(stderr, "Not a pcmlib file!");
         return;
     }

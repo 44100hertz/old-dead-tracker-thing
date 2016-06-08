@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 #include "common/file.h"
 #include "common/song.h"
@@ -17,12 +18,14 @@ void debug_file(char *filename)
 
 int main(int argc, char **argv)
 {
-    Song song;
+    Song *song = malloc(sizeof(Song));
     for(int i=1; i<argc; ++i) {
-        if(!strcmp(argv[i],"read"))
-            read_pcmlib(argv[++i], &song);
-        if(!strcmp(argv[i],"debugfile"))
-            debug_file(argv[++i]);
+        if(!strcmp(argv[++i],"read") && argc<i) {
+            song->pcmlib = file_mmapR(argv[i]);
+            read_pcmlib(song);
+        }
+        if(!strcmp(argv[++i],"debugfile") && argc<i)
+            debug_file(argv[i]);
     }
     return 0;
 }

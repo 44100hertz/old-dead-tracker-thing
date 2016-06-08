@@ -1,7 +1,7 @@
 typedef struct {
-        char *filename;
-        char *addr;
-        size_t size;
+    char *filename;
+    char *addr;
+    size_t size;
 } File_mapped;
 
 File_mapped file_mmapR(char *filename);

@@ -8,30 +8,30 @@
 
 File_mapped file_mmapR(char *filename)
 {
-        /* "filedescriptor" fd is arbitrary unix number for file access */
-        int fd = open(filename, O_RDONLY);
-        /* struct sb contains various file info */
-        struct stat sb;
-        fstat(fd, &sb);
-        /* NULL means map it to any address. 0 is file offset */
-        char *addr = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
-        /* closing the file probably still keeps the mmap alive */
-        close(fd);
+    /* "filedescriptor" fd is arbitrary unix number for file access */
+    int fd = open(filename, O_RDONLY);
+    /* struct sb contains various file info */
+    struct stat sb;
+    fstat(fd, &sb);
+    /* NULL means map it to any address. 0 is file offset */
+    char *addr = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+    /* closing the file probably still keeps the mmap alive */
+    close(fd);
 
-        if(addr == MAP_FAILED) {
-                fprintf(stderr, "Can't mmap file (no RAM or bad file)\n");
-                return (File_mapped){NULL, NULL, -1};
-        }
+    if(addr == MAP_FAILED) {
+        fprintf(stderr, "Can't mmap file (no RAM or bad file)\n");
+        return (File_mapped){NULL, NULL, -1};
+    }
 
-        File_mapped file;
-        file.filename = filename;
-        file.addr = addr;
-        /* casts off_t to size_t. Probably okay? */
-        file.size = sb.st_size;
+    File_mapped file;
+    file.filename = filename;
+    file.addr = addr;
+    /* casts off_t to size_t. Probably okay? */
+    file.size = sb.st_size;
 
-        return file;
+    return file;
 }
 
 void file_free(File_mapped file) {
-        munmap(file.addr, file.size);
+    munmap(file.addr, file.size);
 }

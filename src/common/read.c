@@ -1,3 +1,12 @@
+/* Read in pcmlib and/or song data.
+ * Data is stored in a tree, laid out in the file like:
+ * MMNNSSSSdddd...
+ * M = magic number / id
+ * N = number of children
+ * S = size of data
+ * d = data itself, plus child nodes and their data
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
@@ -6,29 +15,48 @@
 #include "song.h"
 #include "read.h"
 
-void parse(Song *song, char *head, uint32_t bsize)
+static inline uint16_t get16(char *addr) { return *(uint16_t*)(addr); }
+static inline uint32_t get32(char *addr) { return *(uint32_t*)(addr); }
+
+/* TODO: Global song? */
+static
+uint32_t parse(Song *song, char *head, int16_t index)
 {
-    char *end = head + bsize;
-    while(head<end) {
-        char magic = head[0];
-        uint32_t size = *(uint32_t*)&head[1];
-        head+=5;
-        switch(magic) {
-            head+=size;
+    uint16_t magic = get16(head+=2);
+    uint32_t size = get32(head+=4);
+    if(index==-1) {
+        for(uint16_t i=0; i<song->numWaves; i++) {
+            head += parse(song, head, i);
         }
     }
+    switch(magic) {
+    case ID_DATA:
+        song->wave[index].dataSize = size;
+        song->wave[index].data = head;
+        break;
+    case ID_TEXT:
+        song->wave[index].textSize = size;
+        song->wave[index].text = head;
+        break;
+    case ID_SRATE:
+        song->wave[index].srate = get16(head);
+    }
+    head += size;
+    return 8+size; /* 8 is magic+numChildren+size */
 }
 
 void read_pcmlib(char *filename, Song *song)
 {
+    /* TODO: move file access elsewhere */
     song->pcmlib = file_mmapR(filename);
-    if(strcmp(song->pcmlib.addr, "SamPLE")) {
+    char *head = song->pcmlib.addr;
+    if(strcmp(head+=6, "SamPLE")) {
         fprintf(stderr, "Not a pcmlib file!");
         return;
     }
-    char *head = song->pcmlib.addr;
-    uint32_t size = song->pcmlib.size;
-    parse(song, head, size);
+    song->numWaves = get16(head+=2);
+    song->wave = malloc(song->numWaves * sizeof(Wave));
+    parse(song, head, -1);
+    /* TODO: free this when actually needed */
+    free(song->wave);
 }
-
-

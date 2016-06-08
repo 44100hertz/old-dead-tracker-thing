@@ -8,19 +8,14 @@ The format for all data is: MssssDDDDD.....
 
 ## pcmlib
 ### HEADER PARAMS
-    SamPLE  magic number
-    <needed>
-    N       number of waves
+    SamPLExx  magic number, xx = number of waves
     <optional>
     t       text (message)
     \0      padding
 ### EACH WAVE PARAMS
     <needed>
-    W       indicates start of wave data block
     w       wave data
     <optional>
     s       sample rate
     t       text (name)
     \0      padding
-
-

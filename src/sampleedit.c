@@ -20,12 +20,12 @@ int main(int argc, char **argv)
 {
     Song *song = malloc(sizeof(Song));
     for(int i=1; i<argc; ++i) {
-        if(!strcmp(argv[++i],"read") && argc<i) {
-            song->pcmlib = file_mmapR(argv[i]);
+        if(!strcmp(argv[i],"read") && argc>=i) {
+            song->pcmlib = file_mmapR(argv[++i]);
             read_pcmlib(song);
+        } else if(!strcmp(argv[i],"debugfile") && argc>=i) {
+            debug_file(argv[++i]);
         }
-        if(!strcmp(argv[++i],"debugfile") && argc<i)
-            debug_file(argv[i]);
     }
     return 0;
 }

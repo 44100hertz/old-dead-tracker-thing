@@ -19,29 +19,52 @@ static inline uint16_t get16(char *addr) { return *(uint16_t*)(addr); }
 static inline uint32_t get32(char *addr) { return *(uint32_t*)(addr); }
 
 static
-uint32_t parse(Song *song, char *head, int16_t index)
+char *parse_song(Song *song, char *head)
 {
-    uint16_t magic = get16(head+=2);
-    uint32_t size = get32(head+=4);
-    if(index==-1) {
-        for(uint16_t i=0; i<song->numWaves; i++) {
-            head += parse(song, head, i);
+    uint16_t numParams = get16(head+=2);
+    for(int16_t i=0; i<numParams; i++) {
+        uint16_t magic = get16(head+=2);
+        uint32_t size = get32(head+=4);
+        switch(magic) {
+        case ID_NUMWAVES:
+            song->numWaves = get16(head);
         }
     }
-    switch(magic) {
-    case ID_DATA:
-        song->wave[index].dataSize = size;
-        song->wave[index].data = head;
-        break;
-    case ID_TEXT:
-        song->wave[index].textSize = size;
-        song->wave[index].text = head;
-        break;
-    case ID_SRATE:
-        song->wave[index].srate = get16(head);
+    return head;
+}
+
+static
+char *parse_wave(Wave *wave, char *head)
+{
+    uint16_t numParams = get16(head+=2);
+    for(int16_t i=0; i<numParams; i++) {
+        uint16_t magic = get16(head+=2);
+        uint32_t size = get32(head+=4);
+        switch(magic) {
+        case ID_DATA:
+            wave->dataSize = size;
+            wave->data = head;
+            break;
+        case ID_TEXT:
+            wave->textSize = size;
+            wave->text = head;
+            break;
+        case ID_SRATE:
+            wave->srate = get16(head);
+            break;
+        }
+        head += size;
     }
-    head += size;
-    return 8+size; /* 8 is magic+numChildren+size */
+    return head;
+}
+
+static
+void parse(Song *song, char *head)
+{
+    head = parse_song(song, head);
+    for(uint16_t i=0; i<song->numWaves; i++) {
+        head = parse_wave(&song->wave[i], head);
+    }
 }
 
 void read_pcmlib(Song *song)
@@ -53,5 +76,5 @@ void read_pcmlib(Song *song)
     }
     song->numWaves = get16(head+=2);
     song->wave = malloc(song->numWaves * sizeof(Wave));
-    parse(song, head, -1);
+    parse(song, head);
 }

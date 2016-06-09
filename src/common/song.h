@@ -1,7 +1,7 @@
 typedef struct {
     uint32_t dataSize;
-    char *data;
     uint32_t textSize;
+    char *data;
     char *text;
     uint16_t srate;
 } Wave;
@@ -13,6 +13,7 @@ typedef struct {
 } Song;
 
 enum {
+    ID_NUMWAVES,
     ID_DATA,
     ID_TEXT,
     ID_SRATE,

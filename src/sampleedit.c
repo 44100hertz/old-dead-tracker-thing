@@ -5,6 +5,7 @@
 #include "common/file.h"
 #include "common/song.h"
 #include "common/read.h"
+#include "common/write.h"
 
 void debug_file(char *filename)
 {
@@ -25,6 +26,9 @@ int main(int argc, char **argv)
             read_pcmlib(song);
         } else if(!strcmp(argv[i],"debugfile") && argc>=i) {
             debug_file(argv[++i]);
+        } else if(!strcmp(argv[i],"write") && argc>=i) {
+            FILE *out = fopen(argv[++i], "w");
+            write_pcmlib(out, song);
         }
     }
     free(song->wave);

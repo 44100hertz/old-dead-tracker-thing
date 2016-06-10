@@ -89,9 +89,9 @@ void parse(Song *song, char **head)
     }
 }
 
-void read_pcmlib(Song *song)
+void read_pcmlib(Song *song, File_mapped file)
 {
-    char *head = song->pcmlib.addr;
+    char *head = file.addr;
     if(!strcmp(head+=6, "SamPLE")) {
         fprintf(stderr, "Not a pcmlib file!");
         return;

@@ -22,8 +22,7 @@ void debug_write(char *filename)
 {
     FILE *out = fopen(filename, "w");
     Wave wave[1] = {8, 8, "DATADATA", "TEXTTEXT", 44100};
-    File_mapped dummyFile = {NULL, NULL};
-    Song *song = &(Song){dummyFile, 1, wave};
+    Song *song = &(Song){1, wave};
     write_pcmlib(out, song);
     fclose(out);
 
@@ -35,8 +34,9 @@ int main(int argc, char **argv)
     Song *song = malloc(sizeof(Song));;
     for(int i=1; i+1<argc; ++i) {
         if(!strcmp(argv[i],"read")) {
-            song->pcmlib = file_mmapR(argv[++i]);
-            read_pcmlib(song);
+            File_mapped file = file_mmapR(argv[++i]);
+            read_pcmlib(song, file);
+            file_free(file);
         } else if(!strcmp(argv[i],"write")) {
             FILE *out = fopen(argv[++i], "w");
             write_pcmlib(out, song);
@@ -47,7 +47,6 @@ int main(int argc, char **argv)
         }
     }
     free(song->wave);
-    file_free(song->pcmlib);
     free(song);
     return 0;
 }

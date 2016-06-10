@@ -7,7 +7,6 @@ typedef struct {
 } Wave;
 
 typedef struct {
-    File_mapped pcmlib;
     uint16_t numWaves;
     Wave *wave;
 } Song;

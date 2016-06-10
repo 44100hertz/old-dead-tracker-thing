@@ -70,7 +70,7 @@ void parse_wave(Wave *wave, char **head)
     }
 }
 
-/* Whip the specialized parsing functions into shape */
+/* Read in numEntries and call specialized parsing accordingly */
 static
 void parse(Song *song, char **head)
 {
@@ -78,7 +78,6 @@ void parse(Song *song, char **head)
         fprintf(stderr, "Not a pcmlib file!");
         return;
     }
-    song->numWaves = *getdata(head, 2);
     song->wave = malloc(song->numWaves * sizeof(Wave));
     parse_song(song, head);
     for(uint16_t i=0; i<song->numWaves; i++) {

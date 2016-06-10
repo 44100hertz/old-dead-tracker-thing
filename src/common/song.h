@@ -11,7 +11,7 @@ typedef struct {
     Wave *wave;
 } Song;
 
-/* comment */
+/* ONLY append to this list, or incompatabilies will happen */
 enum {
     ID_NUMWAVES = 0x00,
     ID_DATA,

@@ -22,81 +22,75 @@
 #include "song.h"
 #include "read.h"
 
-static inline uint8_t get8(char **addr)
+/* Read in size amount of data.
+ * Moves the head forward accordingly. */
+static
+char *getdata(char **head, uint8_t size)
 {
-    uint8_t value = **addr;
-    *addr+=1;
-    return value;
-}
-static inline uint16_t get16(char **addr)
-{
-    uint16_t value = **(uint16_t**)addr;
-    *addr+=2;
-    return value;
-}
-static inline uint32_t get32(char **addr)
-{
-    uint32_t value = **(uint32_t**)addr;
-    *addr+=4;
-    return value;
+    char *data = *head;
+    *head+=size;
+    return data;
 }
 
+/* Read in the Size and Data of MSD entry
+ * Move the head to the next entry */
+static
+void readEntry(char **head, uint32_t *size, char *data)
+{
+    *size = *(uint32_t*)getdata(head, 4);
+    *data = **head;
+    *head += *size;
+}
+
+/* Parse the initial song header */
 static
 void parse_song(Song *song, char **head)
 {
-    char numParams = get8(head);
+    char numParams = *getdata(head, 1);
     for(uint8_t i=0; i<numParams; i++) {
-        char magic = get8(head);
-        uint32_t size = get32(head);
+        char magic = *getdata(head, 1);
         switch(magic) {
-        case ID_NUMWAVES:
-            song->numWaves = get16(head);
+        case ID_NUMWAVES: readEntry(head, NULL, (char*)&song->numWaves); break;
         }
     }
 }
 
+/* Parse a wave header */
 static
 void parse_wave(Wave *wave, char **head)
 {
-    char numParams = get8(head);
+    char numParams = *getdata(head, 1);
     for(uint8_t i=0; i<numParams; i++) {
-        char magic = get8(head);
-        uint32_t size = get32(head);
+        char magic = *getdata(head, 1);
         switch(magic) {
-        case ID_DATA:
-            wave->dataSize = size;
-            wave->data = *head;
-            *head += size;
-            break;
-        case ID_TEXT:
-            wave->textSize = size;
-            wave->text = *head;
-            *head += size;
-            break;
-        case ID_SRATE:
-            wave->srate = get16(head);
-            break;
+        case ID_DATA: readEntry(head, &wave->dataSize, wave->data); break;
+        case ID_TEXT: readEntry(head, &wave->textSize, wave->text); break;
+        case ID_SRATE: readEntry(head, NULL, (char*)&wave->srate); break;
         }
     }
 }
 
+/* Whip the specialized parsing functions into shape */
 static
 void parse(Song *song, char **head)
 {
+    if(!strcmp(getdata(head, 6), "SamPLE")) {
+        fprintf(stderr, "Not a pcmlib file!");
+        return;
+    }
+    song->numWaves = *getdata(head, 2);
+    song->wave = malloc(song->numWaves * sizeof(Wave));
     parse_song(song, head);
     for(uint16_t i=0; i<song->numWaves; i++) {
         parse_wave(&song->wave[i], head);
     }
 }
 
+/* Read PCMlib.
+ * Parses a standard .pcmlib file, putting data into song accordingly.
+ * TODO: error/segfault handling using file.size */
 void read_pcmlib(Song *song, File_mapped file)
 {
     char *head = file.addr;
-    if(!strcmp(head+=6, "SamPLE")) {
-        fprintf(stderr, "Not a pcmlib file!");
-        return;
-    }
-    song->numWaves = get16(&head);
-    song->wave = malloc(song->numWaves * sizeof(Wave));
     parse(song, &head);
 }

@@ -12,9 +12,11 @@ typedef struct {
     Wave *wave;
 } Song;
 
+/* comment */
 enum {
-    ID_NUMWAVES,
+    ID_NUMWAVES = 0x00,
     ID_DATA,
     ID_TEXT,
     ID_SRATE,
+    BLOCK = 0x80,
 };

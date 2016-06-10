@@ -7,7 +7,7 @@
 #include "common/read.h"
 #include "common/write.h"
 
-void debug_file(char *filename)
+File_mapped debug_mmap(char *filename)
 {
     printf("Attempting to map file: %s\n", filename);
     File_mapped file = file_mmapR(filename);
@@ -15,23 +15,39 @@ void debug_file(char *filename)
         printf("Mapped file!\nname:\t%s\naddr:\t%p\nsize:\t%d\n",
                file.filename, file.addr, file.size);
     }
+    return file;
+}
+
+void debug_write(char *filename)
+{
+    FILE *out = fopen(filename, "w");
+    Wave wave[1] = {8, 8, "DATADATA", "TEXTTEXT", 44100};
+    File_mapped dummyFile = {NULL, NULL};
+    Song *song = &(Song){dummyFile, 1, wave};
+    write_pcmlib(out, song);
+    fclose(out);
+
+    printf("Wrote file: %s\n", filename);
 }
 
 int main(int argc, char **argv)
 {
-    Song *song = malloc(sizeof(Song));
-    for(int i=1; i<argc; ++i) {
-        if(!strcmp(argv[i],"read") && argc>=i) {
+    Song *song = malloc(sizeof(Song));;
+    for(int i=1; i+1<argc; ++i) {
+        if(!strcmp(argv[i],"read")) {
             song->pcmlib = file_mmapR(argv[++i]);
             read_pcmlib(song);
-        } else if(!strcmp(argv[i],"debugfile") && argc>=i) {
-            debug_file(argv[++i]);
-        } else if(!strcmp(argv[i],"write") && argc>=i) {
+        } else if(!strcmp(argv[i],"write")) {
             FILE *out = fopen(argv[++i], "w");
             write_pcmlib(out, song);
+        } else if(!strcmp(argv[i],"debugwrite")) {
+            debug_write(argv[++i]);
+        } else if(!strcmp(argv[i],"debugmmap") && argc>=i) {
+            debug_mmap(argv[++i]);
         }
     }
     free(song->wave);
+    file_free(song->pcmlib);
     free(song);
     return 0;
 }

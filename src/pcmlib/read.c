@@ -18,8 +18,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include "file.h"
-#include "song.h"
+#include "../common/file.h"
+#include "../common/song.h"
 #include "read.h"
 
 /* Simply return the pointer passed to it, and move it forward amount size

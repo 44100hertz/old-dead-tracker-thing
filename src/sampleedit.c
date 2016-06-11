@@ -4,8 +4,8 @@
 #include <string.h>
 #include "common/file.h"
 #include "common/song.h"
-#include "common/read.h"
-#include "common/write.h"
+#include "pcmlib/read.h"
+#include "pcmlib/write.h"
 
 static
 File_mapped debug_mmap(char *filename)

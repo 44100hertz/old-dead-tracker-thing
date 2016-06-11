@@ -25,14 +25,13 @@
 /* Simply return the pointer passed to it, and move it forward amount size
  * Serves as a way to replace head+=X on every other line */
 static inline
-char *getdata(char **head, uint32_t size)
+char *getdata(char **head, uint16_t size)
 {
     char *data = *head;
     *head+=size;
     return data;
 }
 /* Convenience functions */
-static inline uint32_t get32(char **head) { return *(uint32_t*)getdata(head, 4); }
 static inline uint16_t get16(char **head) { return *(uint16_t*)getdata(head, 2); }
 static inline uint8_t   get8(char **head)  { return *(uint8_t*)getdata(head, 1); }
 
@@ -43,7 +42,7 @@ void parse_song(Song *song, char **head)
     char numParams = get8(head);
     for(uint8_t i=0; i<numParams; i++) {
         char magic = get8(head);
-        uint32_t size = get32(head);
+        uint16_t size = get16(head);
         switch(magic) {
         case ID_NUMWAVES: song->numWaves = get16(head); break;
         }
@@ -57,7 +56,7 @@ void parse_wave(Wave *wave, char **head)
     char numParams = get8(head);
     for(uint8_t i=0; i<numParams; i++) {
         char magic = get8(head);
-        uint32_t size = get32(head);
+        uint16_t size = get16(head);
         switch(magic) {
         case ID_DATA:
             wave->dataSize = size;

@@ -1,3 +1,5 @@
+/* For format data specifics, see read.c */
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -7,10 +9,10 @@
 #include "write.h"
 
 static
-void writeEntry(FILE *out, char id, uint32_t size, void *data)
+void writeEntry(FILE *out, char id, uint16_t size, void *data)
 {
     putc(id, out);
-    fwrite(&size, 4, 1, out);
+    fwrite(&size, 2, 1, out);
     fwrite(data, 1, size, out);
 }
 

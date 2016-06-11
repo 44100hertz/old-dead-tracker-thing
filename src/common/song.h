@@ -1,6 +1,6 @@
 typedef struct {
-    uint32_t dataSize;
-    uint32_t textSize;
+    uint16_t dataSize;
+    uint16_t textSize;
     char *data;
     char *text;
     uint16_t srate;

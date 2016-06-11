@@ -76,8 +76,8 @@ void parse_wave(Wave *wave, char **head)
 static
 void parse(Song *song, char **head)
 {
-    if(!strcmp(getdata(head, 6), "SamPLE")) {
-        printf("Not a pcmlib file!");
+    if(memcmp(getdata(head, 6), "SampLE", 6)) {
+        printf("Not a pcmlib file!\n");
         return;
     }
     parse_song(song, head);

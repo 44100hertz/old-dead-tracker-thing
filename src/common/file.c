@@ -33,5 +33,5 @@ File_mapped file_mmapR(char *filename)
 }
 
 void file_free(File_mapped file) {
-    munmap(file.addr, file.size);
+    if(file.addr!=NULL)  munmap(file.addr, file.size);
 }

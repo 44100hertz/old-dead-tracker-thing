@@ -30,13 +30,13 @@ void write_pcmlib(FILE *out, Song *song)
         Wave wave = song->wave[i];
         /* Number of entries in wave data */
         count = 0;
-        if(wave.dataSize>0) count++;
-        if(wave.textSize>0) count++;
+        if(wave.data_size>0) count++;
+        if(wave.text_size>0) count++;
         if(wave.srate>0)    count++;
         putc(count, out);
         /* Entries in wave data */
         if(wave.srate>0)    writeEntry(out, ID_SRATE, 2, &wave.srate);
-        if(wave.textSize>0) writeEntry(out, ID_TEXT, wave.textSize, wave.text);
-        if(wave.dataSize>0) writeEntry(out, ID_DATA, wave.dataSize, wave.data);
+        if(wave.text_size>0) writeEntry(out, ID_TEXT, wave.text_size, wave.text);
+        if(wave.data_size>0) writeEntry(out, ID_DATA, wave.data_size, wave.data);
     }
 }

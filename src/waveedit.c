@@ -8,6 +8,34 @@
 #include "write.h"
 
 static
+void read(Song *song, File_mapped pcmlib, char *filename) {
+    printf("Opening file for reading: %s\n", filename);
+    pcmlib = file_mmapR(filename);
+    read_pcmlib(song, pcmlib);
+}
+
+static
+void write(Song *song, char *filename) {
+    printf("Opening file for writing: %s\n", filename);
+    FILE *out = fopen(filename, "w");
+    write_pcmlib(out, song);
+}
+
+static
+void songinfo(Song *song)
+{
+    printf("----- Song information -----\n");
+    printf("> Number of waves: %d\n", song->numWaves);
+    printf("----- Wave information -----\n");
+    for(uint8_t i=0; i<song->numWaves; i++) {
+        Wave wave = song->wave[i];
+        printf("> Wave %d: %.*s\n", i, wave.text_size, wave.text);
+        printf("  > Data size: %d\n", wave.data_size);
+        printf("  > Sample rate: %d\n", wave.srate);
+    }
+}
+#ifdef DEBUG
+static
 File_mapped debug_mmap(char *filename)
 {
     printf("Attempting to map file: %s\n", filename);
@@ -23,47 +51,31 @@ static
 void debug_write(char *filename)
 {
     FILE *out = fopen(filename, "w");
-    Wave wave = {8, 8, "DATADATA", "TEXTTEXT", 44100};
+    Wave wave = {"DATADATA", "TEXTTEXT", 8, 8, 44100};
     Song *song = &(Song){1, &wave};
     write_pcmlib(out, song);
     fclose(out);
 
     printf("Wrote file: %s\n", filename);
 }
-
-static
-void songinfo(Song *song)
-{
-    printf("----- Song information -----\n");
-    printf("> Number of waves: %d\n", song->numWaves);
-    printf("----- Wave information -----\n");
-    for(uint8_t i=0; i<song->numWaves; i++) {
-        Wave wave = song->wave[i];
-        printf("> Wave %d: %.*s\n", i, wave.textSize, wave.text);
-        printf("  > Data size: %d\n", wave.dataSize);
-        printf("  > Sample rate: %d\n", wave.srate);
-    }
-}
+#endif
 
 int main(int argc, char **argv)
 {
     Song *song = malloc(sizeof(Song));
     File_mapped pcmlib;
-    for(int i=1; i+1<argc; ++i) {
-        if(!strcmp(argv[i],"read")) {
-            printf("Opening file for reading: %s\n", argv[i+1]);
-            pcmlib = file_mmapR(argv[++i]);
-            read_pcmlib(song, pcmlib);
-        } else if(!strcmp(argv[i],"write")) {
-            printf("Opening file for writing: %s\n", argv[i+1]);
-            FILE *out = fopen(argv[++i], "w");
-            write_pcmlib(out, song);
-        } else if(!strcmp(argv[i],"info")) {
-            songinfo(song);
-        } else if(!strcmp(argv[i],"debugwrite")) {
-            debug_write(argv[++i]);
-        } else if(!strcmp(argv[i],"debugmmap") && argc>=i) {
-            debug_mmap(argv[++i]);
+    for(int i=0; i<argc; ++i) {
+        /* One-argument functions */
+        if(!strcmp(argv[i],"info")) songinfo(song);
+        /* Two-argument functions */
+        if(i>argc) {
+            if     (!strcmp(argv[i],"read"))       read(song, pcmlib, argv[++i]);
+            else if(!strcmp(argv[i],"write"))      write(song, argv[++i]);
+            else if(!strcmp(argv[i],"info"))       songinfo(song);
+#ifdef DEBUG
+            else if(!strcmp(argv[i],"debugwrite")) debug_write(argv[++i]);
+            else if(!strcmp(argv[i],"debugmmap"))  debug_mmap(argv[++i]);
+#endif
         }
     }
     file_free(pcmlib);

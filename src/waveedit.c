@@ -2,10 +2,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include "common/file.h"
-#include "common/song.h"
-#include "pcmlib/read.h"
-#include "pcmlib/write.h"
+#include "song.h"
+#include "file.h"
+#include "read.h"
+#include "write.h"
 
 static
 File_mapped debug_mmap(char *filename)

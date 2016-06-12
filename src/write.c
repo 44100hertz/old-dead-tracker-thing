@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../common/file.h"
-#include "../common/song.h"
+#include "file.h"
+#include "song.h"
 #include "write.h"
 
 static

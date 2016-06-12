@@ -20,20 +20,7 @@
 #include <string.h>
 #include "file.h"
 #include "song.h"
-#include "read.h"
-
-/* Simply return the pointer passed to it, and move it forward amount size
- * Serves as a way to replace head+=X on every other line */
-static inline
-char *getdata(char **head, uint16_t size)
-{
-    char *data = *head;
-    *head+=size;
-    return data;
-}
-/* Convenience functions */
-static inline uint16_t get16(char **head) { return *(uint16_t*)getdata(head, 2); }
-static inline uint8_t   get8(char **head)  { return *(uint8_t*)getdata(head, 1); }
+#include "get.h"
 
 /* Parse the initial song header */
 static
@@ -59,11 +46,11 @@ void parse_wave(Wave *wave, char **head)
         uint16_t size = get16(head);
         switch(magic) {
         case ID_DATA:
-            wave->dataSize = size;
+            wave->data_size = size;
             wave->data = getdata(head, size);
             break;
         case ID_TEXT:
-            wave->textSize = size;
+            wave->text_size = size;
             wave->text = getdata(head, size);
             break;
         case ID_SRATE: wave->srate = get16(head); break;

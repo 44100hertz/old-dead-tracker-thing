@@ -6,7 +6,6 @@
 #include <string.h>
 #include "file.h"
 #include "song.h"
-#include "write.h"
 
 static
 void writeEntry(FILE *out, char id, uint16_t size, void *data)

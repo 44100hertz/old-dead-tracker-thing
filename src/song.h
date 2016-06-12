@@ -1,8 +1,8 @@
 typedef struct {
-    uint16_t dataSize;
-    uint16_t textSize;
     char *data;
     char *text;
+    uint16_t data_size;
+    uint16_t text_size;
     uint16_t srate;
 } Wave;
 
@@ -11,11 +11,9 @@ typedef struct {
     Wave *wave;
 } Song;
 
-/* ONLY append to this list, or incompatabilies will happen */
 enum {
-    ID_NUMWAVES = 0x00,
-    ID_DATA,
-    ID_TEXT,
-    ID_SRATE,
-    BLOCK = 0x80,
+    ID_NUMWAVES = 'N',
+    ID_DATA = 'd',
+    ID_TEXT = 't',
+    ID_SRATE = 's',
 };

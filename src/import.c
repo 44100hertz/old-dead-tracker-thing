@@ -41,7 +41,8 @@ void import_AU(Wave *wave, File_mapped file)
         fprintf(stderr, "Not a .au file\n");
         return;
     }
-    if(dataOffset!=0xffffffff) head = file.addr+dataOffset;
+    if(dataOffset!=0xffffffff) wave->data = file.addr+dataOffset;
+    else wave->data = head;
     if(dataSize>0xffff) dataSize = 0xffff;
     else wave->data_size = dataSize;
 }

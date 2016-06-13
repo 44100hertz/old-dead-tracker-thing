@@ -5,6 +5,8 @@
 #include "get.h"
 #include "song.h"
 
+#define MAX(x, y) (x>y)?x:y
+
 static
 uint32_t get32BE(char **head)
 {
@@ -19,8 +21,7 @@ uint32_t get32BE(char **head)
 
 void import_RAW(Wave *wave, File_mapped file)
 {
-    if(file.size>0xffff) wave->data_size = 0xffff;
-    else wave->data_size = file.size;
+    wave->data_size = MAX(0xffff, file.size);
     wave->data = file.addr;
 }
 
@@ -43,6 +44,5 @@ void import_AU(Wave *wave, File_mapped file)
     }
     if(dataOffset!=0xffffffff) wave->data = file.addr+dataOffset;
     else wave->data = head;
-    if(dataSize>0xffff) dataSize = 0xffff;
-    else wave->data_size = dataSize;
+    wave->data_size = MAX(0xffff, dataSize);
 }

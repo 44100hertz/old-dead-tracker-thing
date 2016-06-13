@@ -9,21 +9,23 @@
 #include "import.h"
 
 static
-void read(Song *song, File_mapped pcmlib, char *path) {
+void read(Song *song, File_mapped pcmlib, char *path)
+{
     printf("Opening file for reading: %s\n", path);
     pcmlib = file_mmapR(path);
     read_pcmlib(song, pcmlib);
 }
-
 static
-void write(Song *song, char *path) {
+void write(Song *song, char *path)
+{
     printf("Opening file for writing: %s\n", path);
     FILE *out = fopen(path, "w");
     write_pcmlib(out, song);
 }
 
 static
-void import(Song *song, char *path) {
+void import(Song *song, char *path)
+{
     printf("Importing file: %s\n", path);
 
     uint16_t *numWaves = &song->numWaves;

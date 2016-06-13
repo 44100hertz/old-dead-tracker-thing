@@ -6,10 +6,10 @@
 #include <unistd.h>
 #include "file.h"
 
-File_mapped file_mmapR(char *filename)
+File_mapped file_mmapR(char *path)
 {
     /* "filedescriptor" fd is arbitrary unix number for file access */
-    int fd = open(filename, O_RDONLY);
+    int fd = open(path, O_RDONLY);
     /* struct sb contains various file info */
     struct stat sb;
     fstat(fd, &sb);
@@ -24,7 +24,7 @@ File_mapped file_mmapR(char *filename)
     }
 
     File_mapped file;
-    file.filename = filename;
+    file.path = path;
     file.addr = addr;
     /* casts off_t to size_t. Probably okay? */
     file.size = sb.st_size;

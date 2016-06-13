@@ -91,20 +91,23 @@ int main(int argc, char **argv)
     Song *song = malloc(sizeof(Song));
     File_mapped pcmlib;
     for(int i=0; i<argc; ++i) {
-        if(!strcmp(argv[i],"--status")||!strcmp(argv[i],"-s")) {
+#define IFARG(string, abbrev) if(!strcmp(argv[i],string)||!strcmp(argv[i],abbrev))
+#define ARGNEXT (argv[i+1][0]!='-' && (i<=argc+1))
+        IFARG("--status", "-s") {
             songinfo(song);
-        } else if(!strcmp(argv[i],"--write")||!strcmp(argv[i],"-w")) {
-            if(argv[i+1][0]!='-') write(song, argv[++i]);
-        } else if(!strcmp(argv[i],"--read")||!strcmp(argv[i],"-r")) {
-            if(argv[i+1][0]!='-') read(song, pcmlib, argv[++i]);
-        } else if(!strcmp(argv[i],"--import")||!strcmp(argv[i],"-i")) {
-            while(argv[i+1][0]!='-') import(song, argv[++i]);
+        } else IFARG("--write", "-w") {
+            if(ARGNEXT) write(song, argv[++i]);
+        } else IFARG("--read", "-r") {
+            if(ARGNEXT) read(song, pcmlib, argv[++i]);
+        } else IFARG("--import", "-i") {
+           while(ARGNEXT) import(song, argv[++i]);
 #ifdef DEBUG
-        } else if(!strcmp(argv[i],"--debugwrite")) {
-            debug_write(argv[++i]);
-        } else if(!strcmp(argv[i],"--debugmmap"))  debug_mmap(argv[++i]);
+        } else IFARG("--debugwrite", "-dw") {
+            if(ARGNEXT) debug_write(argv[++i]);
+        } else IFARG("--debugmmap", "-dm") {
+            if(ARGNEXT) debug_mmap(argv[++i]);
 #endif
-        else if(!strcmp(argv[i],"--help")||!strcmp(argv[i],"-h")) {
+        } else IFARG("--help", "-h") {
             printf("waveedit:\n"
                    "  A way to read, write, and edit .pcmlib files used by funtracker.\n"
                    "  Arguments are interpreted as direct commands.\n"

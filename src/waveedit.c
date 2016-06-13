@@ -91,17 +91,33 @@ int main(int argc, char **argv)
     Song *song = malloc(sizeof(Song));
     File_mapped pcmlib;
     for(int i=0; i<argc; ++i) {
-        /* One-argument functions */
-        if(!strcmp(argv[i],"info")) songinfo(song);
-        /* Two-argument functions */
-        if(i<=argc+1) {
-            if     (!strcmp(argv[i],"read"))       read(song, pcmlib, argv[++i]);
-            else if(!strcmp(argv[i],"write"))      write(song, argv[++i]);
-            else if(!strcmp(argv[i],"import"))     import(song, argv[++i]);
+        if(!strcmp(argv[i],"--status")||!strcmp(argv[i],"-s")) {
+            songinfo(song);
+        } else if(!strcmp(argv[i],"--write")||!strcmp(argv[i],"-w")) {
+            if(argv[i+1][0]!='-') write(song, argv[++i]);
+        } else if(!strcmp(argv[i],"--read")||!strcmp(argv[i],"-r")) {
+            if(argv[i+1][0]!='-') read(song, pcmlib, argv[++i]);
+        } else if(!strcmp(argv[i],"--import")||!strcmp(argv[i],"-i")) {
+            while(argv[i+1][0]!='-') import(song, argv[++i]);
 #ifdef DEBUG
-            else if(!strcmp(argv[i],"debugwrite")) debug_write(argv[++i]);
-            else if(!strcmp(argv[i],"debugmmap"))  debug_mmap(argv[++i]);
+        } else if(!strcmp(argv[i],"--debugwrite")) {
+            debug_write(argv[++i]);
+        } else if(!strcmp(argv[i],"--debugmmap"))  debug_mmap(argv[++i]);
 #endif
+        else if(!strcmp(argv[i],"--help")||!strcmp(argv[i],"-h")) {
+            printf("waveedit:\n"
+                   "  A way to read, write, and edit .pcmlib files used by funtracker.\n"
+                   "  Arguments are interpreted as direct commands.\n"
+                   "  --status/-s: print all information about the current pcmlib\n"
+                   "  --read/-r:   read in a .pcmlib file. Does not append to current pcmlib\n"
+                   "  --import/-i: read in .au or headerless .pcm, append to current pcmlib\n"
+                   "  --write/-w:  write the current pcmlib to a file\n"
+                   "  --help/-h:   print this message\n"
+#ifdef DEBUG
+                   "  --debugwrite: write a blank pcmlib file to filename\n"
+                   "  --debugmmap:  test memory mapping filename\n"
+#endif
+                );
         }
     }
     file_free(pcmlib);
